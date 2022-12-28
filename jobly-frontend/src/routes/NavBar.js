@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import UserContext from "../auth/UserContext";
 
 function NavBar({logout}) {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser, setCurrentUser } = useContext(UserContext);
 
     function renderLoggedIn() {
         return (

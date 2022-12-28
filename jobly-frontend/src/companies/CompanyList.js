@@ -14,12 +14,11 @@ const CompanyList = () => {
     async function search(name) {
         let companies = await JoblyApi.getCompanies(name)
         setCompanies(companies);
-        console.log(companies);
     }
 
     return (
         <div>
-            <SearchForm search={search}/>
+            <SearchForm search={search}  type="companies"/>
             {companies.length
             ? (
                 <div className="CompanyList-list">

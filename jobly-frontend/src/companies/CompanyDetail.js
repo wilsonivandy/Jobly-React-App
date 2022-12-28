@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { render } from "react-dom";
 import { useParams } from "react-router-dom";
 import JoblyApi from "../api";
+import JobCardList from "../jobs/JobCardList";
 
 const CompanyDetail = () => {
     const { handle } = useParams();
@@ -13,15 +15,23 @@ const CompanyDetail = () => {
     
         getCompany();
       }, [handle]);
-    
 
-    return (
-        <div>
+    const renderCompany = () => {
+      if (company) {
+        return (
+          <div>
             <h4>{company.name}</h4>
             <p>{company.description}</p>
-            {/* <JobCardList jobs={company.jobs} /> */}
-        </div>
+            <JobCardList jobs={company.jobs} />
+          </div>
+        )
+      }
+    }
 
+    return (
+      <div>
+        {renderCompany()}
+      </div>
     )
 }
 

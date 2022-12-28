@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-// import Alert from "../common/Alert";
+import Alert from "../Alert";
 
 /** Form for creating a new item to add to snacks or drinks.
  *
@@ -21,16 +21,13 @@ const SignUpForm = ({ signUp }) => {
 
   async function handleSubmit(evt) {
     evt.preventDefault();
-    let res = await signUp(formData);
-    if (res.success) {
-       history.push("/companies")
+    let result = await signUp(formData);
+    if (result.success) {
+      history.push("/companies");
     } else {
-        setFormErrors(res.errors)
+      setFormErrors(result.errors);
     }
-    alert("Submitted!");
-    setFormData(INITIAL_STATE);
-  };
-
+  }
   /** Update local state w/curr state of input elem */
 
   const handleChange = evt => {
