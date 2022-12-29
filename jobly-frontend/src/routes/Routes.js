@@ -1,11 +1,11 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import Homepage from "../Homepage";
+import Homepage from "../homepage/Homepage";
 import CompanyList from "../companies/CompanyList";
 import JobList from "../jobs/JobList";
 import CompanyDetail from "../companies/CompanyDetail";
 import LoginForm from "../auth/LoginForm";
-import ProfileForm from "../ProfileForm";
+import ProfileForm from "../profiles/ProfileForm";
 import SignupForm from "../auth/SignUpForm";
 import PrivateRoute from "./PrivateRoute";
 
@@ -24,9 +24,9 @@ function Routes({login, signUp}) {
           <SignupForm signUp={signUp} />
         </Route>
 
-        <PrivateRoute exact path="/companies">
+        <Route exact path="/companies">
           <CompanyList />
-        </PrivateRoute>
+        </Route>
 
         <PrivateRoute exact path="/jobs">
           <JobList />

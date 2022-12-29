@@ -4,7 +4,7 @@ import UserContext from './auth/UserContext';
 import useLocalStorage from "./hooks/useLocalStorage";
 import { BrowserRouter } from 'react-router-dom';
 import JoblyApi from "./api";
-
+import LoadingSpinner from "./common/LoadingSpinner";
 import Routes from './routes/Routes'
 import NavBar from './routes/NavBar'
 import jwt from "jsonwebtoken";
@@ -18,6 +18,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [token, setToken] = useLocalStorage(TOKEN_LOCAL_STORAGE);
   const [applicationIds, setApplicationIds] = useState(new Set([]));
+  const [infoLoaded, setInfoLoaded] = useState(false);
 
   // useEffect(function loadInfo() {
   //   async function getCurrentUser() {
@@ -57,11 +58,13 @@ function App() {
           setCurrentUser(null);
         }
       }
+      setInfoLoaded(true);
     }
 
     // set infoLoaded to false while async getCurrentUser runs; once the
     // data is fetched (or even if an error happens!), this will be set back
     // to false to control the spinner.
+    setInfoLoaded(false);
     getCurrentUser();
   }, [token]);
 
@@ -69,13 +72,14 @@ function App() {
   async function signUp(signupData) {
     try {
       let token = await JoblyApi.signUp(signupData);
+      console.log('setting token!')
       setToken(token);
       return { success: true };
     } catch (errors) {
-      console.error("signup failed", errors);
       return { success: false, errors };
     }
   }
+
   async function login(user) {
     try {
       let token = await JoblyApi.login(user);
@@ -100,6 +104,8 @@ function App() {
     setCurrentUser(null);
     setToken(null);
   }
+
+  if (!infoLoaded) return <LoadingSpinner />;
 
   return (
     <BrowserRouter>

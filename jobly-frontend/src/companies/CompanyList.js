@@ -1,25 +1,41 @@
-import React, {useState, useEffect} from 'react';
-import CompanyCard from './CompanyCard'
-import SearchForm from '../SearchForm';
+import React, { useState, useEffect } from "react";
+import SearchForm from "../common/SearchForm";
 import JoblyApi from "../api";
+import CompanyCard from "./CompanyCard";
+import LoadingSpinner from "../common/LoadingSpinner";
 
-const CompanyList = () => {
-    const [companies, setCompanies] = useState([]);
+/** Show page with list of companies.
+ *
+ * On mount, loads companies from API.
+ * Re-loads filtered companies on submit from search form.
+ *
+ * This is routed to at /companies
+ *
+ * Routes -> { CompanyCard, SearchForm }
+ */
 
-    useEffect(function getCompaniesOnMount() {
-        console.debug("CompanyList useEffect getCompaniesOnMount");
-        search();
-      }, []);
+function CompanyList() {
+  console.debug("CompanyList");
 
-    async function search(name) {
-        let companies = await JoblyApi.getCompanies(name)
-        setCompanies(companies);
-    }
+  const [companies, setCompanies] = useState(null);
 
-    return (
-        <div>
-            <SearchForm search={search}  type="companies"/>
-            {companies.length
+  useEffect(function getCompaniesOnMount() {
+    console.debug("CompanyList useEffect getCompaniesOnMount");
+    search();
+  }, []);
+
+  /** Triggered by search form submit; reloads companies. */
+  async function search(name) {
+    let companies = await JoblyApi.getCompanies(name);
+    setCompanies(companies);
+  }
+
+  if (!companies) return <LoadingSpinner />;
+
+  return (
+      <div className="CompanyList col-md-8 offset-md-2">
+        <SearchForm search={search} type="companies" />
+        {companies.length
             ? (
                 <div className="CompanyList-list">
                   {companies.map(c => (
@@ -28,16 +44,14 @@ const CompanyList = () => {
                           handle={c.handle}
                           name={c.name}
                           description={c.description}
-                          logoUrl={c.logoUrl}
                       />
                   ))}
                 </div>
             ) : (
                 <p className="lead">Sorry, no results were found!</p>
             )}
-
-        </div>
-    )
+      </div>
+  );
 }
 
 export default CompanyList;

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import JobCardList from './JobCardList'
-import SearchForm from '../SearchForm';
+import SearchForm from '../common/SearchForm';
 import JoblyApi from "../api";
 
 const JobList = () => {
@@ -12,12 +12,13 @@ const JobList = () => {
       }, []);
 
     async function search(title) {
+        console.log("searching")
         let res = await JoblyApi.getJobs(title)
         setJobs(res);
     }
 
     return (
-        <div>
+        <div className='col-md-8 offset-md-2'>
             <SearchForm search={search} type="jobs"/>
             {jobs.length
             ? <JobCardList jobs={jobs} />

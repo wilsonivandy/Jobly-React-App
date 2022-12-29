@@ -1,38 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { render } from "react-dom";
 import { useParams } from "react-router-dom";
 import JoblyApi from "../api";
 import JobCardList from "../jobs/JobCardList";
+import LoadingSpinner from "../common/LoadingSpinner";
 
-const CompanyDetail = () => {
-    const { handle } = useParams();
-    const [company, setCompany] = useState(null)
+/** Company Detail page.
+ *
+ * Renders information about company, along with the jobs at that company.
+ *
+ * Routed at /companies/:handle
+ *
+ * Routes -> CompanyDetail -> JobCardList
+ */
 
-    useEffect(function getDetail() {
-        async function getCompany() {
-          setCompany(await JoblyApi.getCompany(handle));
-        }
-    
-        getCompany();
-      }, [handle]);
+function CompanyDetail() {
+  const { handle } = useParams();
+  console.debug("CompanyDetail", "handle=", handle);
 
-    const renderCompany = () => {
-      if (company) {
-        return (
-          <div>
-            <h4>{company.name}</h4>
-            <p>{company.description}</p>
-            <JobCardList jobs={company.jobs} />
-          </div>
-        )
-      }
+  const [company, setCompany] = useState(null);
+
+  useEffect(function getCompanyAndJobsForUser() {
+    async function getCompany() {
+      setCompany(await JoblyApi.getCompany(handle));
     }
 
-    return (
-      <div>
-        {renderCompany()}
+    getCompany();
+  }, [handle]);
+
+  if (!company) return <LoadingSpinner />;
+
+  return (
+      <div className="CompanyDetail col-md-8 offset-md-2 mt-3">
+        <h4>{company.name}</h4>
+        <p>{company.description}</p>
+        <JobCardList jobs={company.jobs} />
       </div>
-    )
+  );
 }
 
 export default CompanyDetail;

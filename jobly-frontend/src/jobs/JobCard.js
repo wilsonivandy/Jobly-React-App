@@ -1,41 +1,60 @@
 import React, { useContext, useState } from "react";
 import "./JobCard.css";
-import { Card, CardBody, CardTitle, CardText } from "reactstrap";
 import UserContext from "../auth/UserContext";
 
-function JobCard({id, title, salary, equity, companyName}) {
-    const {hasAppliedToJob, applyToJob} = useContext(UserContext);
-    const [applied, setApplied] = useState();
+function JobCard({ id, title, salary, equity, companyName }) {
+  console.debug("JobCard");
 
-    async function applyJob(evt) {
-        if (hasAppliedToJob(id)) return;
-        applyToJob(id);
-        setApplied(true);
-    }
+  const { hasAppliedToJob, applyToJob } = useContext(UserContext);
+  const [applied, setApplied] = useState();
 
-    return (
-        <Card className="my-2" outline style={{width: '22vw'}}>
-          {/* <div className="JobCard card"> {applied}
-            <div className="card-body"> */}
-            <CardBody>
-              <CardTitle tag="h5">
-              {title} @ {companyName}
-              </CardTitle>
-              {salary && <div><small>Salary: {salary}</small></div>}
-              {equity !== undefined && <div><small>Equity: {equity}</small></div>}
-              <button
-                  className="btn btn-default font-weight-bold text-uppercase float-right"
-                  onClick={applyJob}
-                  disabled={applied}
-              >
-                {applied ? "Applied" : "Apply"}
-              </button>
-            </CardBody>
-            {/* </div>
-          </div> */}
-        </Card>
-    )    
+  React.useEffect(function updateAppliedStatus() {
+    console.debug("JobCard useEffect updateAppliedStatus", "id=", id);
+
+    setApplied(hasAppliedToJob(id));
+  }, [id, hasAppliedToJob]);
+
+  /** Apply for a job */
+  async function handleApply(evt) {
+    if (hasAppliedToJob(id)) return;
+    applyToJob(id);
+    setApplied(true);
+  }
+
+  return (
+      <div className="JobCard card"> {applied}
+        <div className="card-body">
+          <h6 className="card-title">{title}</h6>
+          <p>{companyName}</p>
+          {salary && <div><small>Salary: {formatSalary(salary)}</small></div>}
+          {equity !== undefined && <div><small>Equity: {equity}</small></div>}
+          <button
+              className="btn btn-primary font-weight-bold text-uppercase float-right"
+              onClick={handleApply}
+              disabled={applied}
+          >
+            {applied ? "Applied" : "Apply"}
+          </button>
+        </div>
+      </div>
+  );
 }
 
+/** Render integer salary like '$1,250,343' */
+
+function formatSalary(salary) {
+  const digitsRev = [];
+  const salaryStr = salary.toString();
+
+  for (let i = salaryStr.length - 1; i >= 0; i--) {
+    digitsRev.push(salaryStr[i]);
+    if (i > 0 && i % 3 === 0) digitsRev.push(",");
+  }
+
+  return digitsRev.reverse().join("");
+}
+
+
 export default JobCard;
+
 

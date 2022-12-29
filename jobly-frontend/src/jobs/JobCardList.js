@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import JoblyApi from "../api";
 import JobCard from './JobCard';
-import './JobCardList.css'
-import { Card, CardBody, CardTitle, CardText } from "reactstrap";
+// import './JobCardList.css'
 
 const JobCardList = ({ jobs }) => {
     return (
-        <div className='container'>
+        <div className='JobCard'>
             {jobs.map(job => (
                    <JobCard
                     key={job.id}

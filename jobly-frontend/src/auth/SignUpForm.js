@@ -1,48 +1,64 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import Alert from "../Alert";
+import Alert from "../common/Alert";
 
-/** Form for creating a new item to add to snacks or drinks.
+/** Signup form.
  *
- * Has state for the name/quantity of the item; on submission,
- * sends {name, qty} to fn rec'd from parent.
+ * Shows form and manages update to state on changes.
+ * On submission:
+ * - calls signup function prop
+ * - redirects to /companies route
  *
+ * Routes -> SignupForm -> Alert
+ * Routed as /signup
  */
 
-const SignUpForm = ({ signUp }) => {
-
-// Initialize States
+function SignupForm({ signup }) {
   const history = useHistory();
-  const INITIAL_STATE = { username: "", password: "", firstName: "", lastName: "", email: ""};
-  const [formData, setFormData] = useState(INITIAL_STATE);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
   const [formErrors, setFormErrors] = useState([]);
 
- /** Update states w/ initial state upon form submission */
+  console.debug(
+      "SignupForm",
+      "signup=", typeof signup,
+      "formData=", formData,
+      "formErrors=", formErrors,
+  );
+
+  /** Handle form submit:
+   *
+   * Calls login func prop and, if successful, redirect to /companies.
+   */
 
   async function handleSubmit(evt) {
     evt.preventDefault();
-    let result = await signUp(formData);
+    let result = await signup(formData);
     if (result.success) {
       history.push("/companies");
     } else {
       setFormErrors(result.errors);
     }
   }
-  /** Update local state w/curr state of input elem */
 
-  const handleChange = evt => {
-    const { name, value }= evt.target;
-    setFormData(fData => ({
-      ...fData,
-      [name]: value
-    }));
-  };
-
-  /** render form */
+  /** Update form data field */
+  function handleChange(evt) {
+    const { name, value } = evt.target;
+    setFormData(data => ({ ...data, [name]: value }));
+  }
 
   return (
-    <div>
-        <form onSubmit={handleSubmit}>
+      <div className="SignupForm">
+        <div className="container col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+          <h2 className="mb-3 mt-3">Sign Up</h2>
+          <div className="card">
+            <div className="card-body">
+              <form onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label>Username</label>
                   <input
@@ -92,10 +108,10 @@ const SignUpForm = ({ signUp }) => {
                   />
                 </div>
 
-                {/* {formErrors.length
+                {formErrors.length
                     ? <Alert type="danger" messages={formErrors} />
                     : null
-                } */}
+                }
 
                 <button
                     type="submit"
@@ -105,8 +121,11 @@ const SignUpForm = ({ signUp }) => {
                   Submit
                 </button>
               </form>
-    </div>
+            </div>
+          </div>
+        </div>
+      </div>
   );
-};
+}
 
-export default SignUpForm;
+export default SignupForm;
