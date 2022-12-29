@@ -20,27 +20,6 @@ function App() {
   const [applicationIds, setApplicationIds] = useState(new Set([]));
   const [infoLoaded, setInfoLoaded] = useState(false);
 
-  // useEffect(function loadInfo() {
-  //   async function getCurrentUser() {
-  //     if (token) {
-  //       try {
-  //         let { username } = jwt.decode(token)
-  //         JoblyApi.token = token;
-  //         let currentUser = await JoblyApi.getCurrentUser(username);
-  //         setCurrentUser(currentUser);
-  //         console.log('set current user to:');
-  //         console.log(currentUser);
-  //         setApplicationIds(new Set(currentUser.applications))
-  //       } catch {
-  //         setCurrentUser(null);
-  //       }
-  //     }
-  //     setInfoLoad(true);
-  //   }
-  //   setInfoLoad(false);
-  //   getCurrentUser();
-  // }, [token])
-
   useEffect(function loadUserInfo() {
     console.debug("App useEffect loadUserInfo", "token=", token);
 
